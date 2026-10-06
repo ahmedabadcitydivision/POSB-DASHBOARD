@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#9f1720">
+<title>POSB Account Opening Dashboard • FY 2026-27</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--red:#a51019;--red2:#d52d38;--gold:#d9a316;--ink:#172033;--muted:#687386;--bg:#f3f5f8;--card:#fff;--line:#e4e8ee;--green:#138a52;--blue:#4169b1;--orange:#d98200;--danger:#c83b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+.header{background:linear-gradient(125deg,#730810,#a51019 58%,#d12d38);color:#fff;padding:20px max(16px,calc((100% - 1480px)/2));position:relative;overflow:hidden}
+.header:after{content:"";position:absolute;width:360px;height:360px;border:52px solid rgba(255,255,255,.06);border-radius:50%;right:-120px;top:-170px}
+.headrow{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.logo{width:48px;height:48px;border-radius:50%;background:#fff;color:var(--red);display:grid;place-items:center;font-weight:900}.title h1{font-size:22px;margin:0 0 4px}.title p{margin:0;font-size:12px;opacity:.85}.period{margin-left:auto;text-align:right;font-size:11px}.period b{display:block;font-size:15px;margin-top:3px}
+.wrap{max-width:1500px;margin:auto;padding:14px}
+.tabs{display:flex;gap:8px;margin:13px 0 10px}.tab{flex:1;max-width:240px;height:44px;border:1px solid #d9dee7;border-radius:10px;background:#fff;color:#5f6878;font-weight:800;cursor:pointer}.tab.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 12px #a5101925}
+.toolbar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;box-shadow:0 2px 10px #18263b08}.toolbar label{font-size:12px;font-weight:800}.toolbar select,.toolbar input,.toolbar button{height:40px;border:1px solid #d6dce5;border-radius:9px;background:#fff;padding:0 11px;color:var(--ink);font-size:13px}.toolbar input{min-width:220px}.toolbar button{cursor:pointer;font-weight:700}.live{margin-left:auto;background:#f4faf7!important;color:var(--green)!important;border-color:#cdebdc!important}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:13px 0}.kpi{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px;position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}.kpi.g:before{background:var(--green)}.kpi.o:before{background:var(--orange)}.kpi.b:before{background:var(--blue)}.kl{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase}.kv{font-size:24px;font-weight:900;margin:6px 0 2px}.ks{font-size:10px;color:var(--muted)}
+.progress{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px;margin-bottom:13px}.ph{display:flex;justify-content:space-between;align-items:end}.ph h2{font-size:15px;margin:0}.big{font-size:25px;font-weight:900;color:var(--red)}.bar{height:13px;background:#edf0f4;border-radius:30px;overflow:hidden;margin-top:10px}.bar span{display:block;height:100%;border-radius:30px;background:linear-gradient(90deg,var(--red),#ef646b)}.pmeta{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:6px}
+.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:13px}.card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px;box-shadow:0 2px 10px #18263b08}.card h3{font-size:14px;margin:0 0 12px}.chart{height:300px}
+.divs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.div{background:#fafbfc;border:1px solid var(--line);border-radius:11px;padding:12px}.div h4{margin:0 0 7px;font-size:13px}.dp{font-size:21px;font-weight:900}.dm{font-size:10px;color:var(--muted);margin-top:3px}.mini{height:6px;background:#e8ebef;border-radius:20px;margin-top:8px;overflow:hidden}.mini span{display:block;height:100%;background:var(--red)}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:13px;margin-top:13px}.person{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #edf0f3}.person:last-child{border-bottom:0}.rank{width:25px;height:25px;border-radius:50%;background:#f0f2f5;display:inline-grid;place-items:center;font-size:10px;font-weight:900;margin-right:7px}.pn{font-size:11px;font-weight:800}.ps{font-size:9px;color:var(--muted);margin-left:32px}.pct{font-size:12px;font-weight:900}.green{color:var(--green)}.orange{color:var(--orange)}.red{color:var(--danger)}
+.insight{padding:9px 0;border-bottom:1px solid #edf0f3;display:flex;justify-content:space-between;gap:8px}.insight:last-child{border-bottom:0}.insight b{font-size:11px}.insight small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.insight strong{font-size:12px;white-space:nowrap}
+.tablecard{margin-top:13px}.tablehead{display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap}.tablehead h3{margin:0 0 3px}.tableinfo{font-size:10px;color:var(--muted)}.scroll{overflow:auto;margin-top:9px}table{width:100%;border-collapse:collapse;min-width:900px}th{background:#f6f7f9;color:#667085;font-size:9px;text-transform:uppercase;text-align:left;padding:10px;position:sticky;top:0;z-index:1}td{padding:10px;border-bottom:1px solid #edf0f3;font-size:11px}tbody tr{cursor:pointer}tbody tr:hover td{background:#fbfcfd}.num{text-align:right;font-variant-numeric:tabular-nums}.pill{padding:4px 7px;border-radius:20px;font-size:9px;font-weight:900;display:inline-block}.p1{background:#e5f7ee;color:#117a49}.p2{background:#e9f0ff;color:#315ca2}.p3{background:#fff2dd;color:#9b6200}.p4{background:#ffe8e8;color:#ae2929}
+.modal{position:fixed;inset:0;background:#08101dcc;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.show{display:flex}.modalbox{background:#fff;width:min(620px,100%);border-radius:17px;padding:20px;box-shadow:0 20px 70px #0004}.close{float:right;width:34px;height:34px;border:0;border-radius:50%;background:#f0f2f5;font-size:20px;cursor:pointer}.detailgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.detail{background:#f7f8fa;border-radius:10px;padding:11px}.detail small{font-size:9px;color:var(--muted)}.detail strong{display:block;font-size:19px;margin-top:4px}.foot{text-align:center;color:#8992a1;font-size:9px;padding:18px}
+
+
+/* Export controls */
+.filterGroup{display:flex;gap:9px;align-items:center;flex-wrap:wrap;flex:1}
+.exportGroup{display:flex;gap:7px;align-items:center;margin-left:auto}
+.exportLabel{font-size:10px;font-weight:900;color:var(--muted)}
+.exportBtn{height:40px!important;padding:0 12px!important;border-radius:9px!important;font-weight:800!important;cursor:pointer}
+.exportBtn.pdf{color:#a51019!important;background:#fff5f5!important;border-color:#efc9cc!important}
+.exportBtn.excel{color:#147a43!important;background:#f1faf5!important;border-color:#c9ead7!important}
+.exportBtn.wa{color:#157347!important;background:#effaf3!important;border-color:#c8ead5!important}
+.exportBtn:disabled{opacity:.55;cursor:wait}
+.exporting{background:#fff!important}
+.mobileHint{display:none}
+@media(max-width:760px){
+ .header{padding:13px 12px}
+ .headrow{gap:10px}.logo{width:40px;height:40px;font-size:12px}.title h1{font-size:16px}.title p{font-size:9px}
+ .wrap{padding:8px}
+ .tabs{margin:8px 0;gap:6px;position:sticky;top:0;z-index:10;background:var(--bg);padding:4px 0}
+ .tab{max-width:none;height:43px;font-size:13px}
+ .toolbar{padding:9px;display:block}
+ .filterGroup{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+ .filterGroup label{display:none}
+ .filterGroup input{grid-column:1/-1;min-width:0;width:100%}
+ .filterGroup button,.filterGroup select{width:100%}
+ .exportGroup{margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+ .exportLabel{display:none}
+ .exportBtn{width:100%;font-size:10px!important;padding:0 5px!important}
+ .kpis{grid-template-columns:repeat(2,1fr);gap:7px;margin:9px 0}
+ .kpi{padding:11px;min-height:86px}.kl{font-size:8px}.kv{font-size:19px;margin-top:5px}.ks{font-size:9px}
+ .progress{padding:12px;margin-bottom:9px}.ph h2{font-size:12px}.big{font-size:21px}
+ .grid2,.grid3{gap:9px;margin-top:9px}.card{padding:11px;border-radius:11px}.card h3{font-size:12px;margin-bottom:9px}
+ .chart{height:235px}
+ .divs{gap:7px}.div{padding:9px}.div h4{font-size:11px}.dp{font-size:18px}.dm{font-size:8px}
+ .tablecard{margin-top:9px}.tablehead h3{font-size:12px}
+ .scroll{margin-left:-11px;margin-right:-11px;padding:0 11px}
+ table{min-width:690px}
+ td{padding:8px;font-size:10px}th{padding:8px;font-size:8px}
+ .person{padding:8px 0}.pn{font-size:10px}.ps{font-size:8px}.pct{font-size:10px}
+ .detailgrid{gap:7px}.detail{padding:9px}.detail strong{font-size:16px}
+}
+@media(max-width:420px){
+ .filterGroup{grid-template-columns:1fr 1fr}
+ .exportBtn{font-size:9px!important}
+ .chart{height:220px}
+ .kpi{min-height:80px}
+}
+
+@media(max-width:1150px){.kpis{grid-template-columns:repeat(3,1fr)}.grid3{grid-template-columns:1fr 1fr}.grid3 .card:last-child{grid-column:1/-1}}
+@media(max-width:760px){.header{padding:16px}.headrow{align-items:flex-start}.period{display:none}.title h1{font-size:18px}.wrap{padding:10px}.toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar input{min-width:0;grid-column:1/-1;width:100%}.toolbar label{display:none}.toolbar .live{margin-left:0}.kpis{grid-template-columns:repeat(2,1fr);gap:8px}.kpi{padding:12px}.kv{font-size:20px}.grid2,.grid3{grid-template-columns:1fr}.divs{grid-template-columns:repeat(2,1fr)}.chart{height:260px}.detailgrid{grid-template-columns:repeat(2,1fr)}table{min-width:850px}}
+@media(max-width:380px){.divs{grid-template-columns:1fr 1fr}.kv{font-size:18px}.title p{font-size:10px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="headrow"><div class="logo">IP</div><div class="title"><h1>POSB Account Opening Performance</h1><p>Ahmedabad City Division • Office-wise Performance Monitor</p></div><div class="period">FINANCIAL YEAR<b>01 Apr 2026 — 31 Mar 2027</b></div></div></header>
+<main class="wrap">
+<div class="tabs"><button class="tab active" id="tabNet" type="button">Net Addition</button><button class="tab" id="tabOpen" type="button">Account Opening</button></div>
+<div class="toolbar">
+<div class="filterGroup"><label>FILTER</label><select id="sub"><option>All Sub-Divisions</option><option>NORTH</option><option>SOUTH</option><option>WEST</option><option>ODHAV</option></select>
+<select id="class"><option>All Office Classes</option><option>HO</option><option>SO</option><option>BO</option></select>
+<select id="perf"><option>All Performance</option><option>Outstanding</option><option>Good</option><option>Attention</option><option>Critical</option></select>
+<input id="search" placeholder="🔎 Search office..."><button id="reset">Reset</button><button id="refresh" class="live">↻ Refresh Live Data</button></div>
+<div class="exportGroup"><span class="exportLabel">EXPORT</span><button class="exportBtn pdf" id="exportPdf">▣ PDF</button><button class="exportBtn excel" id="exportExcel">▦ Excel</button><button class="exportBtn wa" id="exportWA">◈ WhatsApp Image</button></div>
+</div>
+<section class="kpis" id="kpis"></section>
+<section class="progress"><div class="ph"><h2><span id="progressTitle">Overall Net Addition Achievement</span></h2><div class="big" id="pct">0%</div></div><div class="bar"><span id="bar"></span></div><div class="pmeta"><span id="target"></span><span id="actual"></span></div></section>
+<section class="grid2"><div class="card"><h3><span id="divisionTitle">Sub-Division Performance — Target vs Net Addition</span></h3><div class="chart"><canvas id="barChart"></canvas></div></div><div class="card"><h3><span id="distributionTitle">Office Performance Distribution</span></h3><div class="chart"><canvas id="donut"></canvas></div></div></section>
+<section class="card" style="margin-top:13px"><h3>Sub-Division Scorecards</h3><div class="divs" id="divs"></div></section>
+<section class="grid3"><div class="card"><h3>🏆 Top Performing Offices</h3><div id="top"></div></div><div class="card"><h3>⚠️ Offices Requiring Attention</h3><div id="bottom"></div></div><div class="card"><h3>💡 Management Insights</h3><div id="insights"></div></div></section>
+<section class="card tablecard"><div class="tablehead"><div><h3><span id="tableTitle">Office-wise Net Addition Performance</span></h3><div class="tableinfo" id="info"></div></div></div><div class="scroll"><table><thead><tr><th>Rank</th><th>Office</th><th>Sub-Division</th><th>Class</th><th class="num" id="col1">Target</th><th class="num" id="col2">Opened</th><th class="num" id="col3">Closed</th><th class="num" id="col4">Net Addition</th><th class="num" id="col5">Achievement</th><th id="col6">Status</th></tr></thead><tbody id="tbody"></tbody></table></div></section>
+<div class="foot">Interactive prototype using the uploaded POSB Dashboard data • Live Google Sheet connection supported in this build</div>
+</main>
+<div class="modal" id="modal"><div class="modalbox"><button class="close" id="close">×</button><div id="detail"></div></div></div>
+
+<script>
+const FALLBACK=[{"office": "Amraiwadi SO", "solid": "38002605", "sub": "Odhav", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 2851.0, "closed": 1725.0, "net": 1126.0}, {"office": "Asarwa Chakla SO", "solid": "38001601", "sub": "North", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 760.0, "closed": 429.0, "net": 331.0}, {"office": "Asarwa Ext South SO", "solid": "38002401", "sub": "North", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 1243.0, "closed": 838.0, "net": 405.0}, {"office": "Aslali SO", "solid": "38242701", "sub": "Odhav", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 391.0, "closed": 264.0, "net": 127.0}, {"office": "Aslali SO - Jetalpur BO", "solid": "L3707", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 115.0, "closed": 22.0, "net": 93.0}, {"office": "Aslali SO - Ode BO", "solid": "L3708", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 110.0, "closed": 30.0, "net": 80.0}, {"office": "Bapunagar SO", "solid": "38002402", "sub": "Odhav", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 951.0, "closed": 622.0, "net": 329.0}, {"office": "Bareja SO", "solid": "38242501", "sub": "Odhav", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 647.0, "closed": 525.0, "net": 122.0}, {"office": "Bareja SO - Girmatha BO", "solid": "M0448", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 113.0, "closed": 17.0, "net": 96.0}, {"office": "Bareja SO - Mahijada BO", "solid": "M0449", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 100.0, "closed": 22.0, "net": 78.0}, {"office": "Bareja SO - Miroli BO", "solid": "M0450", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 106.0, "closed": 7.0, "net": 99.0}, {"office": "Bareja SO - Muktipur BO", "solid": "M0451", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 104.0, "closed": 21.0, "net": 83.0}, {"office": "Bareja SO - Paldi Kankaj BO", "solid": "M0452", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 112.0, "closed": 58.0, "net": 54.0}, {"office": "Bareja SO - Pirana BO", "solid": "M0453", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 101.0, "closed": 21.0, "net": 80.0}, {"office": "Bareja SO - Timba BO", "solid": "M0454", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 16.0, "net": 86.0}, {"office": "Bareja SO - Vasai BO", "solid": "M0455", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 124.0, "closed": 13.0, "net": 111.0}, {"office": "Behrampura SO", "solid": "38002201", "sub": "South", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1525.0, "closed": 1043.0, "net": 482.0}, {"office": "Bodakdev SO", "solid": "38005401", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 2043.0, "closed": 1535.0, "net": 508.0}, {"office": "Bopal SO", "solid": "38005801", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1731.0, "closed": 1198.0, "net": 533.0}, {"office": "Bopal SO - Shela BO", "solid": "H1072", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 111.0, "closed": 7.0, "net": 104.0}, {"office": "Cantonment SO", "solid": "38000401", "sub": "North", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 355.0, "closed": 94.0, "net": 261.0}, {"office": "Chandkheda Society Area SO", "solid": "38242401", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 2112.0, "closed": 1173.0, "net": 939.0}, {"office": "Chandkheda Society Area SO - Chandkheda BO", "solid": "L8782", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 125.0, "closed": 36.0, "net": 89.0}, {"office": "Chandkheda Society Area SO - Sughad BO", "solid": "L8783", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 124.0, "closed": 6.0, "net": 118.0}, {"office": "Chandlodiya SO", "solid": "38248101", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1656.0, "closed": 1077.0, "net": 579.0}, {"office": "Chandlodiya SO-Gota BO", "solid": "J5564", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 7.0, "net": 95.0}, {"office": "Civil Hospital SO", "solid": "38001602", "sub": "North", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 3910.0, "closed": 2076.0, "net": 1834.0}, {"office": "Ctm Char Rasta SO", "solid": "38002602", "sub": "Odhav", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 1178.0, "closed": 666.0, "net": 512.0}, {"office": "D Cabin SO", "solid": "38001901", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1325.0, "closed": 883.0, "net": 442.0}, {"office": "Dariapur SO", "solid": "38000101", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 935.0, "closed": 780.0, "net": 155.0}, {"office": "Darpan Society SO", "solid": "38000902", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 2017.0, "closed": 1667.0, "net": 350.0}, {"office": "Delhi Gate SO", "solid": "38000402", "sub": "North", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1018.0, "closed": 848.0, "net": 170.0}, {"office": "Digvijaynagar SO", "solid": "38247001", "sub": "West", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1020.0, "closed": 417.0, "net": 603.0}, {"office": "Digvijaynagar SO-Jagatpur BO", "solid": "G8387", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 108.0, "closed": 9.0, "net": 99.0}, {"office": "Digvijaynagar SO-Kali BO", "solid": "G8388", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 103.0, "closed": 29.0, "net": 74.0}, {"office": "Digvijaynagar SO-Tragad BO", "solid": "G8389", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 101.0, "closed": 56.0, "net": 45.0}, {"office": "District Court SO", "solid": "38000102", "sub": "South", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 1367.0, "closed": 1034.0, "net": 333.0}, {"office": "Dr. BAOU SO", "solid": "38248103", "sub": "West", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 400.0, "closed": 106.0, "net": 294.0}, {"office": "Ellisbridge SO", "solid": "38000602", "sub": "South", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 1367.0, "closed": 1125.0, "net": 242.0}, {"office": "Gandhi Ashram SO", "solid": "38002701", "sub": "South", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1656.0, "closed": 1243.0, "net": 413.0}, {"office": "Ghatlodia SO", "solid": "38006101", "sub": "West", "classOfPO": "HSG-I NFG", "officeClass": "SO", "target": 1800.0, "opened": 4347.0, "closed": 3908.0, "net": 439.0}, {"office": "Gheekanta Road SO", "solid": "38000104", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 912.0, "closed": 826.0, "net": 86.0}, {"office": "Ghodasar SO", "solid": "38005001", "sub": "Odhav", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 2793.0, "closed": 2168.0, "net": 625.0}, {"office": "Ghuma S.O", "solid": "38005802", "sub": "West", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 569.0, "closed": 104.0, "net": 465.0}, {"office": "Girdharnagar SO", "solid": "38000404", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1012.0, "closed": 770.0, "net": 242.0}, {"office": "Gujarat High Court SO", "solid": "38006001", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 443.0, "closed": 342.0, "net": 101.0}, {"office": "Gujarat High Court SO-Lapkaman BO", "solid": "M2535", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 120.0, "closed": 123.0, "net": -3.0}, {"office": "Gujarat High Court SO-Ognaj BO", "solid": "M2537", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 114.0, "closed": 22.0, "net": 92.0}, {"office": "Gujarat University SO", "solid": "38000903", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 556.0, "closed": 208.0, "net": 348.0}, {"office": "I E Bapunagar SO", "solid": "38002403", "sub": "Odhav", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1723.0, "closed": 1309.0, "net": 414.0}, {"office": "I I M SO", "solid": "38001502", "sub": "West", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 802.0, "closed": 543.0, "net": 259.0}, {"office": "Isanpur SO", "solid": "38244301", "sub": "Odhav", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 3570.0, "closed": 3056.0, "net": 514.0}, {"office": "Jantanagar S.O - Gatrad B.O", "solid": "L3520", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 129.0, "closed": 19.0, "net": 110.0}, {"office": "Jantanagar S.O - Ramol B.O", "solid": "L3521", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 121.0, "closed": 82.0, "net": 39.0}, {"office": "Jantanagar S.O - Vanch B.O", "solid": "L3522", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 134.0, "closed": 51.0, "net": 83.0}, {"office": "Jantanagar SO", "solid": "38244901", "sub": "Odhav", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 662.0, "closed": 340.0, "net": 322.0}, {"office": "Jawahar Chowk SO", "solid": "38000802", "sub": "Odhav", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1705.0, "closed": 1598.0, "net": 107.0}, {"office": "Jivraj Park SO", "solid": "38005101", "sub": "South", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 2737.0, "closed": 1818.0, "net": 919.0}, {"office": "Jodhpur Char Rasta SO", "solid": "38001503", "sub": "West", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1472.0, "closed": 554.0, "net": 918.0}, {"office": "Juhapura SO", "solid": "38005501", "sub": "South", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1428.0, "closed": 848.0, "net": 580.0}, {"office": "Kathwada Maize Product SO", "solid": "38243002", "sub": "Odhav", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 803.0, "closed": 582.0, "net": 221.0}, {"office": "Kathwada Maize Product SO - Bakrol BO", "solid": "O1420", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 127.0, "closed": 28.0, "net": 99.0}, {"office": "Kathwada Maize Product SO - Bhuvaldi BO", "solid": "O1421", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 152.0, "closed": 1.0, "net": 151.0}, {"office": "Kathwada Maize Product SO - Kanbha BO", "solid": "O1422", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 110.0, "closed": 9.0, "net": 101.0}, {"office": "Kathwada Maize Product SO - Kathwada BO", "solid": "O1423", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 174.0, "closed": 4.0, "net": 170.0}, {"office": "Kathwada Maize Product SO - Kubadthal BO", "solid": "O1424", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 119.0, "closed": 8.0, "net": 111.0}, {"office": "Kathwada Maize Product SO - Kujad BO", "solid": "O1425", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 159.0, "closed": 8.0, "net": 151.0}, {"office": "Kathwada Maize Product SO - Pasunj BO", "solid": "O1426", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 130.0, "closed": 3.0, "net": 127.0}, {"office": "Kathwada Maize Product SO - Zanu BO", "solid": "O1427", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 103.0, "closed": 2.0, "net": 101.0}, {"office": "Khadia SO", "solid": "38000107", "sub": "South", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1856.0, "closed": 1787.0, "net": 69.0}, {"office": "Khokhara Mehmadabad SO", "solid": "38000803", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1491.0, "closed": 1120.0, "net": 371.0}, {"office": "Krishnanagar SO", "solid": "38234501", "sub": "North", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 6769.0, "closed": 5792.0, "net": 977.0}, {"office": "Kubernagar SO", "solid": "38234002", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1837.0, "closed": 1466.0, "net": 371.0}, {"office": "Kuha SO", "solid": "38243301", "sub": "Odhav", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 435.0, "closed": 109.0, "net": 326.0}, {"office": "Kuha SO - Bhavda BO", "solid": "N6602", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 13.0, "net": 89.0}, {"office": "Kuha SO - Chamla BO", "solid": "N6603", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 225.0, "closed": 29.0, "net": 196.0}, {"office": "Kuha SO - Chandial BO", "solid": "N6604", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 121.0, "closed": 15.0, "net": 106.0}, {"office": "Kuha SO - Chaulaj BO", "solid": "N6605", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 157.0, "closed": 1.0, "net": 156.0}, {"office": "Kuha SO - Kaniyel BO", "solid": "N6606", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 120.0, "closed": 1.0, "net": 119.0}, {"office": "Kuha SO - Ranodra BO", "solid": "N6607", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 100.0, "closed": 2.0, "net": 98.0}, {"office": "Kuha SO - Undrel BO", "solid": "N6608", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 106.0, "closed": 1.0, "net": 105.0}, {"office": "Kuha SO - Vadod BO", "solid": "N6609", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 230.0, "closed": 15.0, "net": 215.0}, {"office": "Lal Darwaja SO", "solid": "38000109", "sub": "South", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1128.0, "closed": 1045.0, "net": 83.0}, {"office": "Madhupura Market SO", "solid": "38000405", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 774.0, "closed": 458.0, "net": 316.0}, {"office": "Manekbag SO", "solid": "38001504", "sub": "West", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 3427.0, "closed": 2979.0, "net": 448.0}, {"office": "Maninagar SO", "solid": "38000805", "sub": "Odhav", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 4909.0, "closed": 4240.0, "net": 669.0}, {"office": "Meghaningar SO", "solid": "38001603", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1518.0, "closed": 1075.0, "net": 443.0}, {"office": "Memnagar SO", "solid": "38005201", "sub": "West", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1927.0, "closed": 1245.0, "net": 682.0}, {"office": "Motera SO", "solid": "38000502", "sub": "North", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 1434.0, "closed": 885.0, "net": 549.0}, {"office": "Municipal Corporation SO", "solid": "38000111", "sub": "South", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1768.0, "closed": 1360.0, "net": 408.0}, {"office": "N C Market SO", "solid": "38000201", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 847.0, "closed": 694.0, "net": 153.0}, {"office": "Nana Chiloda SO", "solid": "38233004", "sub": "North", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 582.0, "closed": 87.0, "net": 495.0}, {"office": "Nandej SO", "solid": "38243501", "sub": "Odhav", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 433.0, "closed": 206.0, "net": 227.0}, {"office": "Nandej SO - Dhamatvan BO", "solid": "L3543", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 110.0, "closed": 43.0, "net": 67.0}, {"office": "Nandej SO - Gamdi BO", "solid": "L3544", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 110.0, "closed": 24.0, "net": 86.0}, {"office": "Nandej SO - Geratpur BO", "solid": "L3545", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 108.0, "closed": 32.0, "net": 76.0}, {"office": "Nandej SO - Harniav BO", "solid": "L3546", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 105.0, "closed": 16.0, "net": 89.0}, {"office": "Nandej SO - Hirapur BO", "solid": "L3547", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 9.0, "net": 93.0}, {"office": "Naranpura Vistar SO", "solid": "38001301", "sub": "West", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 3659.0, "closed": 3250.0, "net": 409.0}, {"office": "Narayannagar SO", "solid": "38000702", "sub": "South", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1451.0, "closed": 984.0, "net": 467.0}, {"office": "Naroda I E SO", "solid": "38233001", "sub": "North", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1326.0, "closed": 465.0, "net": 861.0}, {"office": "Naroda I E SO - Bilasia BO", "solid": "G9636", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 128.0, "closed": 19.0, "net": 109.0}, {"office": "Naroda I E SO - Limbadia BO", "solid": "G9637", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 131.0, "closed": 28.0, "net": 103.0}, {"office": "Naroda I E SO - Medra BO", "solid": "G9638", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 145.0, "closed": 31.0, "net": 114.0}, {"office": "Naroda I E SO - Pardhol BO", "solid": "G9640", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 246.0, "closed": 53.0, "net": 193.0}, {"office": "Naroda I E SO - Vehlal BO", "solid": "G9641", "sub": "North", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 125.0, "closed": 2.0, "net": 123.0}, {"office": "Naroda S A SO", "solid": "38233002", "sub": "North", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1133.0, "closed": 817.0, "net": 316.0}, {"office": "Naroda SO", "solid": "38233003", "sub": "North", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 3097.0, "closed": 2618.0, "net": 479.0}, {"office": "Narol SO", "solid": "38240501", "sub": "Odhav", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 642.0, "closed": 237.0, "net": 405.0}, {"office": "Narol SO - Gyaspur BO", "solid": "J5979", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 103.0, "closed": 5.0, "net": 98.0}, {"office": "Narol SO - Lambha BO", "solid": "J5980", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 106.0, "closed": 19.0, "net": 87.0}, {"office": "Narol SO - Saijpur BO", "solid": "J5981", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 101.0, "closed": 18.0, "net": 83.0}, {"office": "Narol SO - Shahwadi BO", "solid": "J5982", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 13.0, "net": 89.0}, {"office": "Nava Vadaj SO", "solid": "38001302", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 3100.0, "closed": 2557.0, "net": 543.0}, {"office": "Navjivan SO", "solid": "38001401", "sub": "West", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 731.0, "closed": 606.0, "net": 125.0}, {"office": "Navrangpura HO", "solid": "38000900", "sub": "West", "classOfPO": "Gazetted HSG-I", "officeClass": "HO", "target": 7000.0, "opened": 2959.0, "closed": 2357.0, "net": 602.0}, {"office": "New Ranip", "solid": "38247002", "sub": "West", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 701.0, "closed": 101.0, "net": 600.0}, {"office": "Nikol SO", "solid": "38004901", "sub": "Odhav", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 2978.0, "closed": 2582.0, "net": 396.0}, {"office": "Nirnaynagar SO", "solid": "38248102", "sub": "West", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 1227.0, "closed": 970.0, "net": 257.0}, {"office": "Noblenagar SO", "solid": "38234003", "sub": "North", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 1893.0, "closed": 1272.0, "net": 621.0}, {"office": "O N G C SO", "solid": "38000503", "sub": "North", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 1767.0, "closed": 1185.0, "net": 582.0}, {"office": "Odhav Industrial Estate SO", "solid": "38241501", "sub": "Odhav", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1804.0, "closed": 1254.0, "net": 550.0}, {"office": "Paldi SO", "solid": "38000703", "sub": "South", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 4028.0, "closed": 3257.0, "net": 771.0}, {"office": "Polytechnic SO", "solid": "38001505", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 878.0, "closed": 733.0, "net": 145.0}, {"office": "Raikhad SO", "solid": "38000112", "sub": "South", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 361.0, "closed": 173.0, "net": 188.0}, {"office": "Railway Colony SO", "solid": "38001902", "sub": "South", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 1600.0, "closed": 1191.0, "net": 409.0}, {"office": "Railwaypura SO", "solid": "38000202", "sub": "North", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 406.0, "closed": 94.0, "net": 312.0}, {"office": "Rajpur Gomtipur SO", "solid": "38002102", "sub": "North", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 747.0, "closed": 565.0, "net": 182.0}, {"office": "Rakhial Udyog Vistar SO", "solid": "38002302", "sub": "Odhav", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 614.0, "closed": 260.0, "net": 354.0}, {"office": "Ranip SO", "solid": "38248001", "sub": "West", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 2627.0, "closed": 1804.0, "net": 823.0}, {"office": "Revdibazar HO", "solid": "38000200", "sub": "North", "classOfPO": "HSG-I", "officeClass": "HO", "target": 7000.0, "opened": 2372.0, "closed": 1745.0, "net": 627.0}, {"office": "S A C SO", "solid": "38001506", "sub": "West", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 328.0, "closed": 241.0, "net": 87.0}, {"office": "S A Mills SO", "solid": "38000806", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 666.0, "closed": 431.0, "net": 235.0}, {"office": "Sabarmati SO", "solid": "38000504", "sub": "South", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 2409.0, "closed": 1887.0, "net": 522.0}, {"office": "Saijpur Bogha SO", "solid": "38234503", "sub": "North", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 3306.0, "closed": 2566.0, "net": 740.0}, {"office": "Sanchar Colony SO", "solid": "38000603", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 334.0, "closed": 0.0, "net": 334.0}, {"office": "Saraspur SO", "solid": "38001801", "sub": "North", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 503.0, "closed": 344.0, "net": 159.0}, {"office": "Sardarnagar SO", "solid": "38247501", "sub": "North", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 1833.0, "closed": 1413.0, "net": 420.0}, {"office": "Sarkhej Road SO", "solid": "38000704", "sub": "South", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 982.0, "closed": 817.0, "net": 165.0}, {"office": "Sarkhej SO", "solid": "38221001", "sub": "South", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1086.0, "closed": 752.0, "net": 334.0}, {"office": "Sarkhej SO - Bakrol BO", "solid": "E1453", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 100.0, "closed": 20.0, "net": 80.0}, {"office": "Sarkhej SO - Bhat BO", "solid": "B6353", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 161.0, "closed": 31.0, "net": 130.0}, {"office": "Sarkhej SO - Fatewadi BO", "solid": "G6789", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 112.0, "closed": 6.0, "net": 106.0}, {"office": "Sarkhej SO - Kasindra BO", "solid": "B6354", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 101.0, "closed": 24.0, "net": 77.0}, {"office": "Sarkhej SO - Kolat BO", "solid": "E9852", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 2.0, "net": 100.0}, {"office": "Sarkhej SO - Navapura BO", "solid": "D3141", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 112.0, "closed": 25.0, "net": 87.0}, {"office": "Sarkhej SO - Sanathal BO", "solid": "F8242", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 115.0, "closed": 22.0, "net": 93.0}, {"office": "Sarkhej SO - Telav BO", "solid": "D3142", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 102.0, "closed": 1.0, "net": 101.0}, {"office": "Sarkhej SO - Vishalpur BO", "solid": "E1454", "sub": "South", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 105.0, "closed": 16.0, "net": 89.0}, {"office": "Shah Alam Roza SO", "solid": "38002802", "sub": "South", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 975.0, "closed": 895.0, "net": 80.0}, {"office": "Shahibag SO", "solid": "38000406", "sub": "North", "classOfPO": "HSG-I", "officeClass": "SO", "target": 1800.0, "opened": 2115.0, "closed": 1623.0, "net": 492.0}, {"office": "Shahpur SO", "solid": "38000407", "sub": "North", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 819.0, "closed": 558.0, "net": 261.0}, {"office": "Shastrinagar SO", "solid": "38001303", "sub": "West", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1828.0, "closed": 1437.0, "net": 391.0}, {"office": "Sola H B C SO", "solid": "38006301", "sub": "West", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 2394.0, "closed": 1551.0, "net": 843.0}, {"office": "Sola SO", "solid": "38006002", "sub": "West", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 896.0, "closed": 300.0, "net": 596.0}, {"office": "South Bopal S.O", "solid": "38005701", "sub": "West", "classOfPO": "LSG", "officeClass": "SO", "target": 1800.0, "opened": 493.0, "closed": 102.0, "net": 391.0}, {"office": "Sukhrampura SO", "solid": "38002303", "sub": "Odhav", "classOfPO": "Class-II", "officeClass": "SO", "target": 1800.0, "opened": 720.0, "closed": 547.0, "net": 173.0}, {"office": "T B Nagar SO", "solid": "38235002", "sub": "Odhav", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1337.0, "closed": 860.0, "net": 477.0}, {"office": "Thaltej SO", "solid": "38005901", "sub": "West", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 1069.0, "closed": 671.0, "net": 398.0}, {"office": "Thaltej SO-Shilaj BO", "solid": "A5470", "sub": "West", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 141.0, "closed": 92.0, "net": 49.0}, {"office": "Vadaj SO", "solid": "38001305", "sub": "South", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 1270.0, "closed": 1177.0, "net": 93.0}, {"office": "Vastral SO", "solid": "38241802", "sub": "Odhav", "classOfPO": "Class-III", "officeClass": "SO", "target": 1800.0, "opened": 749.0, "closed": 258.0, "net": 491.0}, {"office": "Vatva Industrial Estate SO", "solid": "38244501", "sub": "Odhav", "classOfPO": "HSG-II", "officeClass": "SO", "target": 1800.0, "opened": 728.0, "closed": 381.0, "net": 347.0}, {"office": "Vatva Industrial Estate SO - Hathijan BO", "solid": "C0305", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 231.0, "closed": 133.0, "net": 98.0}, {"office": "Vatva Industrial Estate SO - Vinzol BO", "solid": "F3676", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 120.0, "closed": 52.0, "net": 68.0}, {"office": "Vatva Industrial Estate SO - Vivekanandnagar BO", "solid": "E5395", "sub": "Odhav", "classOfPO": "BO", "officeClass": "BO", "target": 100.0, "opened": 108.0, "closed": 19.0, "net": 89.0}, {"office": "Vatva SO", "solid": "38244001", "sub": "Odhav", "classOfPO": "Class-I", "officeClass": "SO", "target": 1800.0, "opened": 889.0, "closed": 584.0, "net": 305.0}];
+const SHEET_ID="1e4lBRE3YFxOyRsvh0fZ-2_I4szBQhS44gRSiSQ4KbS0";
+const SHEET_NAME="Data";
+let DATA=FALLBACK, barChart, donut;
+let MODE="net";
+const modeName=()=>MODE==="net"?"Net Addition":"Account Opening";
+const actualLabel=()=>MODE==="net"?"Net Addition":"Accounts Opened";
+const actualValue=x=>MODE==="net"?Number(x.net)||0:Number(x.opened)||0;
+const fmt=n=>Math.round(Number(n)||0).toLocaleString("en-IN");
+const normSub=s=>(s||"").toUpperCase().replace(/^ASP\s+/,"").replace(/\s+SUB DIVISION$/,"").trim();
+const status=p=>p>=100?"Outstanding":p>=75?"Good":p>=50?"Attention":"Critical";
+const pill=p=>p>=100?"p1":p>=75?"p2":p>=50?"p3":"p4";
+const tone=p=>p>=100?"green":p>=50?"orange":"red";
+function enrich(a){return a.map(x=>{const target=+x.target||0,opened=+x.opened||0,closed=+x.closed||0,net=+x.net||opened-closed;return {...x,sub:normSub(x.sub),target,opened,closed,net,ach:target?(MODE==="net"?net:opened)/target*100:0};});}
+function filtered(){
+ const sub=document.getElementById("sub").value, c=document.getElementById("class").value, p=document.getElementById("perf").value, q=document.getElementById("search").value.trim().toLowerCase();
+ let a=enrich(DATA).filter(x=>(sub==="All Sub-Divisions"||x.sub===sub)&&(c==="All Office Classes"||x.officeClass===c)&&x.office.toLowerCase().includes(q));
+ if(MODE==="net") a=a.filter(x=>p==="All Performance"||status(x.ach)===p).sort((x,y)=>y.ach-x.ach);
+ else a=a.sort((x,y)=>y.opened-x.opened);
+ return a;
+}
+function render(){
+ const a=filtered(),target=a.reduce((z,x)=>z+x.target,0),opened=a.reduce((z,x)=>z+x.opened,0),closed=a.reduce((z,x)=>z+x.closed,0),net=a.reduce((z,x)=>z+x.net,0);
+ document.getElementById("progressTitle").textContent=MODE==="net"?"Overall Net Addition Achievement":"Account Opening Overview";
+ document.getElementById("divisionTitle").textContent=MODE==="net"?"Sub-Division Performance — Target vs Net Addition":"Sub-Division-wise Account Openings";
+ document.getElementById("distributionTitle").textContent=MODE==="net"?"Net Addition Performance Distribution":"Account Opening Distribution";
+ document.getElementById("tableTitle").textContent=MODE==="net"?"Office-wise Net Addition Performance":"Office-wise Account Opening Performance";
+ if(MODE==="net"){
+   document.getElementById("perf").style.display="";
+   ["Target","Opened","Closed","Net Addition","Achievement","Status"].forEach((v,i)=>{const e=document.getElementById("col"+(i+1));e.textContent=v;e.style.display=""});
+ }else{
+   document.getElementById("perf").style.display="none";
+   document.getElementById("col1").textContent="Accounts Opened";
+   document.getElementById("col1").style.display="";
+   ["col2","col3","col4","col5","col6"].forEach(id=>document.getElementById(id).style.display="none");
+ }
+ if(MODE==="net"){
+   const ach=target?net/target*100:0,short=net-target;
+   document.getElementById("kpis").innerHTML=[
+    ["Offices",a.length,"Current view",""],["Target Net Addition",fmt(target),"Allotted target","o"],["Accounts Opened",fmt(opened),"Gross openings","b"],["Accounts Closed",fmt(closed),"Total closures",""],["Net Addition",fmt(net),"Net growth","g"],["Shortfall / Surplus",(short>=0?"+":"")+fmt(short),short>=0?"Above target":"Below target","o"]
+   ].map(k=>`<div class="kpi ${k[3]}"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="ks">${k[2]}</div></div>`).join("");
+   document.getElementById("pct").textContent=ach.toFixed(1)+"%";
+   document.getElementById("bar").style.width=Math.min(Math.max(ach,0),100)+"%";
+   document.getElementById("target").textContent="Target: "+fmt(target);
+   document.getElementById("actual").textContent="Net Addition: "+fmt(net);
+ }else{
+   const avg=a.length?opened/a.length:0;
+   const vals=a.map(x=>x.opened);
+   const hi=vals.length?Math.max(...vals):0,lo=vals.length?Math.min(...vals):0;
+   document.getElementById("kpis").innerHTML=[
+    ["Offices",a.length,"Current view",""],["Accounts Opened",fmt(opened),"Total account openings","g"],["Average / Office",fmt(avg),"Average openings per office","b"],["Highest Office",fmt(hi),"Maximum openings by one office",""],["Lowest Office",fmt(lo),"Minimum openings by one office","o"],["Total Account Openings",fmt(opened),"Gross account openings","g"]
+   ].map(k=>`<div class="kpi ${k[3]}"><div class="kl">${k[0]}</div><div class="kv">${k[1]}</div><div class="ks">${k[2]}</div></div>`).join("");
+   document.getElementById("pct").textContent=fmt(opened);
+   document.getElementById("bar").style.width="100%";
+   document.getElementById("target").textContent="Total accounts opened";
+   document.getElementById("actual").textContent=fmt(opened);
+ }
+ const gs=["NORTH","SOUTH","WEST","ODHAV"].map(s=>{
+   const v=a.filter(x=>x.sub===s);
+   return {s,n:v.length,target:v.reduce((z,x)=>z+x.target,0),opened:v.reduce((z,x)=>z+x.opened,0),closed:v.reduce((z,x)=>z+x.closed,0),net:v.reduce((z,x)=>z+x.net,0)};
+ });
+ document.getElementById("divs").innerHTML=gs.map(g=>{
+   if(MODE==="net"){
+     const p=g.target?g.net/g.target*100:0;
+     return `<div class="div"><h4>${g.s}</h4><div class="dp">${p.toFixed(1)}%</div><div class="dm">${g.n} offices • Target ${fmt(g.target)}</div><div class="dm">Net Addition ${fmt(g.net)}</div><div class="mini"><span style="width:${Math.min(Math.max(p,0),100)}%"></span></div></div>`;
+   }
+   return `<div class="div"><h4>${g.s}</h4><div class="dp">${fmt(g.opened)}</div><div class="dm">${g.n} offices</div><div class="dm">Accounts Opened</div><div class="mini"><span style="width:${opened?Math.min(g.opened/Math.max(...gs.map(v=>v.opened))*100,100):0}%"></span></div></div>`;
+ }).join("");
+ drawCharts(gs,a);lists(a);insights(gs,a);table(a);
+}
+function drawCharts(gs,a){
+ if(barChart)barChart.destroy();if(donut)donut.destroy();
+ if(MODE==="net"){
+   barChart=new Chart(document.getElementById("barChart"),{type:"bar",data:{labels:gs.map(g=>g.s),datasets:[{label:"Target Net Addition",data:gs.map(g=>g.target),backgroundColor:"#dfe3e8"},{label:"Net Addition",data:gs.map(g=>g.net),backgroundColor:"#a51019"}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:"#edf0f3"}}}}});
+   const c=["Outstanding","Good","Attention","Critical"].map(st=>a.filter(x=>status(x.ach)===st).length);
+   donut=new Chart(document.getElementById("donut"),{type:"doughnut",data:{labels:["Outstanding ≥100%","Good 75–99%","Attention 50–74%","Critical <50%"],datasets:[{data:c,backgroundColor:["#138a52","#4169b1","#d98200","#c83b3b"],borderColor:"#fff",borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"bottom",labels:{boxWidth:11,font:{size:9}}}}}});
+ }else{
+   barChart=new Chart(document.getElementById("barChart"),{type:"bar",data:{labels:gs.map(g=>g.s),datasets:[{label:"Accounts Opened",data:gs.map(g=>g.opened),backgroundColor:"#a51019"}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:"#edf0f3"}}}}});
+   donut=new Chart(document.getElementById("donut"),{type:"doughnut",data:{labels:gs.map(g=>g.s),datasets:[{data:gs.map(g=>g.opened),backgroundColor:["#a51019","#4169b1","#138a52","#d98200"],borderColor:"#fff",borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"bottom",labels:{boxWidth:11,font:{size:9}}}}}});
+ }
+}
+function person(x,i){return `<div class="person"><div><span class="rank">${i+1}</span><span class="pn">${x.office}</span><div class="ps">${x.sub} • Net ${fmt(x.net)}</div></div><span class="pct ${tone(x.ach)}">${x.ach.toFixed(1)}%</span></div>`}
+function lists(a){
+ if(MODE==="net"){
+   document.getElementById("top").innerHTML=a.slice(0,5).map(person).join("")||"No offices";
+   document.getElementById("bottom").innerHTML=[...a].sort((x,y)=>x.ach-y.ach).slice(0,5).map(person).join("")||"No offices";
+ }else{
+   const top=[...a].sort((x,y)=>y.opened-x.opened), bottom=[...a].sort((x,y)=>x.opened-y.opened);
+   document.getElementById("top").innerHTML=top.slice(0,5).map((x,i)=>`<div class="person"><div><span class="rank">${i+1}</span><span class="pn">${x.office}</span><div class="ps">${x.sub}</div></div><span class="pct green">${fmt(x.opened)}</span></div>`).join("")||"No offices";
+   document.getElementById("bottom").innerHTML=bottom.slice(0,5).map((x,i)=>`<div class="person"><div><span class="rank">${i+1}</span><span class="pn">${x.office}</span><div class="ps">${x.sub}</div></div><span class="pct orange">${fmt(x.opened)}</span></div>`).join("")||"No offices";
+ }
+}
+function insights(gs,a){
+ if(MODE==="net"){
+   const best=[...gs].sort((x,y)=>(y.net/y.target)-(x.net/x.target))[0], worst=[...gs].sort((x,y)=>(x.net/x.target)-(y.net/y.target))[0], top=a[0], critical=a.filter(x=>x.ach<50).length, achieved=a.filter(x=>x.ach>=100).length;
+   document.getElementById("insights").innerHTML=`<div class="insight"><div><b>Best Sub-Division</b><small>${best.s}</small></div><strong class="green">${(best.net/best.target*100).toFixed(1)}%</strong></div><div class="insight"><div><b>Lowest Sub-Division</b><small>${worst.s}</small></div><strong class="red">${(worst.net/worst.target*100).toFixed(1)}%</strong></div><div class="insight"><div><b>Offices at / above target</b><small>Net addition target achieved</small></div><strong>${achieved}</strong></div><div class="insight"><div><b>Critical offices</b><small>Below 50% achievement</small></div><strong class="red">${critical}</strong></div><div class="insight"><div><b>Highest performer</b><small>${top?top.office:"-"}</small></div><strong class="green">${top?top.ach.toFixed(1):"-"}%</strong></div>`;
+ }else{
+   const by=[...a].sort((x,y)=>y.opened-x.opened),best=[...gs].sort((x,y)=>y.opened-x.opened)[0],low=[...gs].sort((x,y)=>x.opened-y.opened)[0],total=a.reduce((z,x)=>z+x.opened,0);
+   document.getElementById("insights").innerHTML=`<div class="insight"><div><b>Highest Sub-Division</b><small>${best.s} account openings</small></div><strong class="green">${fmt(best.opened)}</strong></div><div class="insight"><div><b>Lowest Sub-Division</b><small>${low.s} account openings</small></div><strong class="orange">${fmt(low.opened)}</strong></div><div class="insight"><div><b>Top Opening Office</b><small>${by[0]?by[0].office:"-"}</small></div><strong class="green">${by[0]?fmt(by[0].opened):"-"}</strong></div><div class="insight"><div><b>Average per Office</b><small>Account openings</small></div><strong>${a.length?fmt(total/a.length):"0"}</strong></div><div class="insight"><div><b>Share of top Sub-Division</b><small>${best.s}</small></div><strong>${total?(best.opened/total*100).toFixed(1):"0"}%</strong></div>`;
+ }
+}
+function table(a){
+ if(MODE==="net"){
+   document.getElementById("info").textContent=`${a.length} offices • Achievement = Net Addition ÷ Target • Tap a row for details`;
+   document.getElementById("tbody").innerHTML=a.map((x,i)=>`<tr data-office="${encodeURIComponent(x.office)}"><td>${i+1}</td><td><b>${x.office}</b></td><td>${x.sub}</td><td>${x.officeClass}</td><td class="num">${fmt(x.target)}</td><td class="num">${fmt(x.opened)}</td><td class="num">${fmt(x.closed)}</td><td class="num">${fmt(x.net)}</td><td class="num"><b class="${tone(x.ach)}">${x.ach.toFixed(1)}%</b></td><td><span class="pill ${pill(x.ach)}">${status(x.ach)}</span></td></tr>`).join("");
+ }else{
+   document.getElementById("info").textContent=`${a.length} offices • Sorted by total Accounts Opened (highest to lowest)`;
+   document.getElementById("tbody").innerHTML=a.map((x,i)=>`<tr data-office="${encodeURIComponent(x.office)}"><td>${i+1}</td><td><b>${x.office}</b></td><td>${x.sub}</td><td>${x.officeClass}</td><td class="num"><b>${fmt(x.opened)}</b></td></tr>`).join("");
+ }
+ document.querySelectorAll("#tbody tr").forEach(tr=>tr.addEventListener("click",()=>show(decodeURIComponent(tr.dataset.office))));
+}
+function show(name){
+ const x=enrich(DATA).find(z=>z.office===name);if(!x)return;
+ if(MODE==="net"){
+   const diff=x.net-x.target;
+   document.getElementById("detail").innerHTML=`<div style="font-size:10px;color:#a51019;font-weight:900">${x.sub} • ${x.officeClass}</div><h2 style="margin:4px 0">${x.office}</h2><div style="font-size:10px;color:#687386">SOLID: ${x.solid} • ${x.classOfPO}</div><div style="font-size:11px;font-weight:800;color:#a51019;margin-top:12px">NET ADDITION VIEW</div><div class="detailgrid">${[["Target Net Addition",fmt(x.target)],["Net Addition",fmt(x.net)],["Accounts Opened",fmt(x.opened)],["Accounts Closed",fmt(x.closed)],["Achievement",x.ach.toFixed(1)+"%"],["Shortfall / Surplus",(diff>=0?"+":"")+fmt(diff)]].map(d=>`<div class="detail"><small>${d[0]}</small><strong>${d[1]}</strong></div>`).join("")}</div><div style="margin-top:14px;font-size:11px;font-weight:800">Status: <span class="pill ${pill(x.ach)}">${status(x.ach)}</span></div>`;
+ }else{
+   const all=enrich(DATA), rank=all.sort((a,b)=>b.opened-a.opened).findIndex(a=>a.office===x.office)+1, total=all.reduce((z,v)=>z+v.opened,0)||1;
+   document.getElementById("detail").innerHTML=`<div style="font-size:10px;color:#a51019;font-weight:900">${x.sub} • ${x.officeClass}</div><h2 style="margin:4px 0">${x.office}</h2><div style="font-size:10px;color:#687386">SOLID: ${x.solid} • ${x.classOfPO}</div><div style="font-size:11px;font-weight:800;color:#a51019;margin-top:12px">ACCOUNT OPENING VIEW</div><div class="detailgrid">${[["Accounts Opened",fmt(x.opened)],["Opening Rank",fmt(rank)],["Sub-Division",x.sub],["Office Class",x.officeClass],["Share of Total",(x.opened/total*100).toFixed(1)+"%"],["SOLID",x.solid]].map(d=>`<div class="detail"><small>${d[0]}</small><strong>${d[1]}</strong></div>`).join("")}</div>`;
+ }
+ document.getElementById("modal").classList.add("show");
+}
+function live(){
+ const b=document.getElementById("refresh");
+ b.textContent="Loading…"; b.disabled=true;
+ const callback="__sheetCallback_"+Date.now();
+ const script=document.createElement("script");
+ let finished=false;
+
+ const timer=setTimeout(()=>{
+   if(finished)return;
+   finished=true;
+   cleanup();
+   b.textContent="↻ Refresh Live Data"; b.disabled=false;
+   alert("Google Sheet could not be reached. Please check that the spreadsheet is shared as \"Anyone with the link → Viewer\".\n\nThe dashboard will continue using the embedded workbook data.");
+ },15000);
+
+ function cleanup(){
+   clearTimeout(timer);
+   try{delete window[callback]}catch(e){window[callback]=undefined}
+   if(script.parentNode)script.parentNode.removeChild(script);
+ }
+
+ window[callback]=function(resp){
+   if(finished)return;
+   finished=true;
+   cleanup();
+   try{
+     if(!resp || !resp.table || !resp.table.cols || !resp.table.rows) throw new Error("Invalid Google Sheets response");
+     const cols=resp.table.cols.map(c=>(c.label||c.id||"").trim().toLowerCase());
+     const ix=n=>cols.findIndex(v=>v===n.toLowerCase());
+     const required=["Office Name","SOLID","Sub Division","Class of PO","Office Class","Target Net Addition","Open Total","Close Total","Net addition"];
+     const missing=required.filter(n=>ix(n)<0);
+     if(missing.length) throw new Error("Missing column(s): "+missing.join(", "));
+
+     DATA=resp.table.rows.map(row=>{
+       const c=row.c||[];
+       const val=i=>c[i] && c[i].v!=null ? c[i].v : "";
+       return {
+         office:String(val(ix("Office Name"))),
+         solid:String(val(ix("SOLID"))),
+         sub:String(val(ix("Sub Division"))),
+         classOfPO:String(val(ix("Class of PO"))),
+         officeClass:String(val(ix("Office Class"))),
+         target:num(val(ix("Target Net Addition"))),
+         opened:num(val(ix("Open Total"))),
+         closed:num(val(ix("Close Total"))),
+         net:num(val(ix("Net addition")))
+       };
+     }).filter(x=>x.office);
+
+     render();
+     b.textContent="✓ Live Data Loaded";
+     setTimeout(()=>{b.textContent="↻ Refresh Live Data";b.disabled=false},2500);
+   }catch(e){
+     b.textContent="↻ Refresh Live Data"; b.disabled=false;
+     alert("Google Sheet responded, but its structure could not be read.\n\n"+e.message);
+   }
+ };
+
+ script.onerror=function(){
+   if(finished)return;
+   finished=true; cleanup();
+   b.textContent="↻ Refresh Live Data"; b.disabled=false;
+   alert("Google Sheet could not be reached. Please check that the spreadsheet is shared as \"Anyone with the link → Viewer\".\n\nThe dashboard will continue using the embedded workbook data.");
+ };
+
+ script.src=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&tqx=responseHandler:${callback}`;
+ script.async=true;
+ document.head.appendChild(script);
+}
+function num(v){return Number(String(v??"").replace(/,/g,""))||0}
+function parseCSV(t){const out=[];let row=[],cell="",q=false;for(let i=0;i<t.length;i++){const c=t[i];if(c==='"'){if(q&&t[i+1]==='"'){cell+='"';i++;}else q=!q}else if(c===','&&!q){row.push(cell);cell=""}else if((c==='\\n'||c==='\\r')&&!q){if(c==='\\r'&&t[i+1]==='\\n')i++;row.push(cell);out.push(row);row=[];cell=""}else cell+=c}if(cell||row.length){row.push(cell);out.push(row)}return out}
+["sub","class","perf","search"].forEach(id=>document.getElementById(id).addEventListener(id==="search"?"input":"change",render));
+document.getElementById("reset").addEventListener("click",()=>{document.getElementById("sub").value="All Sub-Divisions";document.getElementById("class").value="All Office Classes";document.getElementById("perf").value="All Performance";document.getElementById("search").value="";render()});
+document.getElementById("tabNet").addEventListener("click",()=>{MODE="net";document.getElementById("tabNet").classList.add("active");document.getElementById("tabOpen").classList.remove("active");render()});
+document.getElementById("tabOpen").addEventListener("click",()=>{MODE="open";document.getElementById("tabOpen").classList.add("active");document.getElementById("tabNet").classList.remove("active");render()});
+
+function exportRows(){
+ const a=filtered();
+ if(MODE==="net"){
+   return a.map((x,i)=>({
+     Rank:i+1,Office:x.office,"Sub-Division":x.sub,Class:x.officeClass,
+     "Target Net Addition":x.target,"Accounts Opened":x.opened,"Accounts Closed":x.closed,
+     "Net Addition":x.net,"Achievement %":Number(x.ach.toFixed(2)),Status:status(x.ach)
+   }));
+ }
+ return a.map((x,i)=>({Rank:i+1,Office:x.office,"Sub-Division":x.sub,Class:x.officeClass,"Accounts Opened":x.opened}));
+}
+function exportExcel(){
+ const btn=document.getElementById("exportExcel");btn.disabled=true;btn.textContent="Preparing…";
+ try{
+   const rows=exportRows();
+   const ws=XLSX.utils.json_to_sheet(rows);
+   const wb=XLSX.utils.book_new();
+   XLSX.utils.book_append_sheet(wb,ws,MODE==="net"?"Net Addition":"Account Opening");
+   ws["!cols"]=Object.keys(rows[0]||{Office:""}).map(k=>({wch:Math.max(12,Math.min(28,k.length+3))}));
+   const stamp=new Date().toISOString().slice(0,10).replaceAll("-","");
+   XLSX.writeFile(wb,`POSB_${MODE==="net"?"Net_Addition":"Account_Opening"}_${stamp}.xlsx`);
+ }catch(e){alert("Excel export failed: "+e.message)}
+ finally{btn.disabled=false;btn.textContent="▦ Excel";}
+}
+async function dashboardCanvas(){
+ const el=document.querySelector("main.wrap");
+ const old=document.querySelector(".exportGroup");
+ document.body.classList.add("exporting");
+ if(old)old.style.visibility="hidden";
+ const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:"#f3f5f8",logging:false,windowWidth:Math.max(document.documentElement.clientWidth,900)});
+ if(old)old.style.visibility="";
+ document.body.classList.remove("exporting");
+ return canvas;
+}
+async function exportPdf(){
+ const btn=document.getElementById("exportPdf");btn.disabled=true;btn.textContent="Preparing…";
+ try{
+   const canvas=await dashboardCanvas();
+   const img=canvas.toDataURL("image/jpeg",0.94);
+   const {jsPDF}=window.jspdf;
+   const pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+   const pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight();
+   const ratio=Math.min(pageW/canvas.width,pageH/canvas.height);
+   const w=canvas.width*ratio,h=canvas.height*ratio;
+   pdf.addImage(img,"JPEG",(pageW-w)/2,(pageH-h)/2,w,h);
+   pdf.save(`POSB_${MODE==="net"?"Net_Addition":"Account_Opening"}_Dashboard.pdf`);
+ }catch(e){alert("PDF export failed: "+e.message)}
+ finally{btn.disabled=false;btn.textContent="▣ PDF";}
+}
+async function exportWhatsApp(){
+ const btn=document.getElementById("exportWA");btn.disabled=true;btn.textContent="Preparing…";
+ try{
+   const canvas=await dashboardCanvas();
+   const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png",1));
+   const file=new File([blob],`POSB_${MODE==="net"?"Net_Addition":"Account_Opening"}_Dashboard.png`,{type:"image/png"});
+   if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+     await navigator.share({title:`POSB ${modeName()} Dashboard`,text:`POSB ${modeName()} Dashboard • FY 2026-27`,files:[file]});
+   }else{
+     const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+     alert("Image created and downloaded. On mobile, you can open the image and share it to WhatsApp.");
+   }
+ }catch(e){
+   if(e.name!=="AbortError") alert("WhatsApp image export failed: "+e.message);
+ }finally{btn.disabled=false;btn.textContent="◈ WhatsApp Image";}
+}
+
+document.getElementById("refresh").addEventListener("click",live);
+document.getElementById("exportExcel").addEventListener("click",exportExcel);
+document.getElementById("exportPdf").addEventListener("click",exportPdf);
+document.getElementById("exportWA").addEventListener("click",exportWhatsApp);document.getElementById("close").addEventListener("click",()=>document.getElementById("modal").classList.remove("show"));document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")document.getElementById("modal").classList.remove("show")});
+render();
+</script>
+</body>
+</html>
